@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
-import { equipment } from '@/app/lib/data';
+import { getEquipment, addEquipment } from '@/app/lib/data';
 
 export async function GET() {
   try {
+    const equipment = await getEquipment();
     return NextResponse.json({
       success: true,
       data: equipment,
@@ -38,18 +39,18 @@ export async function POST(request: Request) {
       );
     }
 
-    // Find the next available ID
+    const equipment = await getEquipment();
     const nextId = Math.max(...equipment.map(eq => eq.id)) + 1;
 
     const newEquipment = {
       id: nextId,
       name,
-      status,
+      status: status as "Active" | "Idle" | "Under Maintenance",
       location,
       lastUpdated: new Date().toISOString()
     };
 
-    equipment.push(newEquipment);
+    await addEquipment(newEquipment);
 
     return NextResponse.json({
       success: true,
@@ -62,4 +63,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-} 
+}

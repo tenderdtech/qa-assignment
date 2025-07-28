@@ -1,5 +1,33 @@
-// In-memory database that persists during runtime but resets on server restart
-export const equipment = [
+import { promises as fs } from 'fs';
+import path from 'path';
+
+const dataPath = path.join(process.cwd(), 'data.json');
+
+export interface Equipment {
+  id: number;
+  name: string;
+  status: "Active" | "Idle" | "Under Maintenance";
+  location: string;
+  lastUpdated: string;
+}
+
+export interface StatusHistory {
+  id: number;
+  equipmentId: number;
+  previousStatus: string;
+  newStatus: string;
+  timestamp: string;
+  changedBy: string;
+}
+
+interface DataStore {
+  equipment: Equipment[];
+  statusHistory: StatusHistory[];
+}
+
+// Default data
+const defaultData: DataStore = {
+  equipment: [
     {
       id: 1,
       name: "Excavator CAT 320",
@@ -35,10 +63,8 @@ export const equipment = [
       location: "Yard",
       lastUpdated: "2024-01-15T08:30:00Z"
     }
-  ];
-  
-  // In-memory status history database
-  export const statusHistory = [
+  ],
+  statusHistory: [
     {
       id: 1,
       equipmentId: 1,
@@ -87,4 +113,72 @@ export const equipment = [
       timestamp: "2024-01-15T08:30:00Z",
       changedBy: "Operator Lisa"
     }
-  ];
+  ]
+};
+
+async function ensureDataFile() {
+  try {
+    await fs.access(dataPath);
+  } catch {
+    await fs.writeFile(dataPath, JSON.stringify(defaultData, null, 2));
+  }
+}
+
+async function readData(): Promise<DataStore> {
+  await ensureDataFile();
+  const data = JSON.parse(await fs.readFile(dataPath, 'utf-8'));
+  return data;
+}
+
+async function writeData(data: DataStore): Promise<void> {
+  await fs.writeFile(dataPath, JSON.stringify(data, null, 2));
+}
+
+export async function getEquipment(): Promise<Equipment[]> {
+  const data = await readData();
+  return data.equipment;
+}
+
+export async function addEquipment(equipment: Equipment): Promise<void> {
+  const data = await readData();
+  data.equipment.push(equipment);
+  await writeData(data);
+}
+
+export async function updateEquipmentStatus(id: number, status: string, changedBy: string): Promise<Equipment | null> {
+  const data = await readData();
+  const equipmentIndex = data.equipment.findIndex(eq => eq.id === id);
+  
+  if (equipmentIndex === -1) return null;
+  
+  const previousStatus = data.equipment[equipmentIndex].status;
+  data.equipment[equipmentIndex].status = status as "Active" | "Idle" | "Under Maintenance";
+  data.equipment[equipmentIndex].lastUpdated = new Date().toISOString();
+  
+  // Add to history
+  const nextHistoryId = Math.max(...data.statusHistory.map(h => h.id)) + 1;
+  const historyEntry: StatusHistory = {
+    id: nextHistoryId,
+    equipmentId: id,
+    previousStatus,
+    newStatus: status,
+    timestamp: new Date().toISOString(),
+    changedBy
+  };
+  data.statusHistory.push(historyEntry);
+  
+  await writeData(data);
+  return data.equipment[equipmentIndex];
+}
+
+export async function getStatusHistory(equipmentId?: number): Promise<StatusHistory[]> {
+  const data = await readData();
+  if (equipmentId) {
+    return data.statusHistory.filter(h => h.equipmentId === equipmentId);
+  }
+  return data.statusHistory;
+}
+
+export async function resetData(): Promise<void> {
+  await writeData(defaultData);
+}

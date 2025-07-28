@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { equipment, statusHistory } from '@/app/lib/data';
+import { updateEquipmentStatus } from '@/app/lib/data';
 
 export async function POST(
   request: Request,
@@ -27,39 +27,19 @@ export async function POST(
       );
     }
 
-    // Find equipment
-    const equipmentIndex = equipment.findIndex(eq => eq.id === equipmentId);
-    if (equipmentIndex === -1) {
+    const updatedEquipment = await updateEquipmentStatus(equipmentId, status, changedBy);
+    
+    if (!updatedEquipment) {
       return NextResponse.json(
         { success: false, error: 'Equipment not found' },
         { status: 404 }
       );
     }
 
-    const previousStatus = equipment[equipmentIndex].status;
-    const timestamp = new Date().toISOString();
-
-    // Update equipment status
-    equipment[equipmentIndex].status = status;
-    equipment[equipmentIndex].lastUpdated = timestamp;
-
-    // Add to history
-    const nextHistoryId = Math.max(...statusHistory.map(h => h.id)) + 1;
-    const historyEntry = {
-      id: nextHistoryId,
-      equipmentId,
-      previousStatus,
-      newStatus: status,
-      timestamp,
-      changedBy
-    };
-    statusHistory.push(historyEntry);
-
     return NextResponse.json({
       success: true,
       data: {
-        equipment: equipment[equipmentIndex],
-        historyEntry
+        equipment: updatedEquipment
       }
     });
   } catch (error) {
@@ -69,4 +49,4 @@ export async function POST(
       { status: 500 }
     );
   }
-} 
+}

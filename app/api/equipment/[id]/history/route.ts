@@ -1,10 +1,10 @@
-import { NextResponse, NextRequest } from 'next/server';
-import { statusHistory } from '@/app/lib/data';
+import { NextResponse } from 'next/server';
+import { getStatusHistory } from '@/app/lib/data';
 
 export async function GET(
-  request: NextRequest,
+  request: Request,
   { params }: { params: Promise<{ id: string }> }
-) { 
+) {
   try {
     const { id } = await params;
     const equipmentId = parseInt(id);
@@ -14,13 +14,16 @@ export async function GET(
     const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : 10;
     const offset = searchParams.get('offset') ? parseInt(searchParams.get('offset')!) : 0;
 
-    // Filter history by equipment ID
-    const equipmentHistory = statusHistory
-      .filter(entry => entry.equipmentId === equipmentId)
-      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+    // Get history for specific equipment
+    const equipmentHistory = await getStatusHistory(equipmentId);
+    
+    // Sort by timestamp (newest first)
+    const sortedHistory = equipmentHistory.sort((a, b) => 
+      new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    );
 
     // Apply pagination
-    const paginatedHistory = equipmentHistory.slice(offset, offset + limit);
+    const paginatedHistory = sortedHistory.slice(offset, offset + limit);
 
     return NextResponse.json({
       success: true,
@@ -40,4 +43,4 @@ export async function GET(
       { status: 500 }
     );
   }
-} 
+}
