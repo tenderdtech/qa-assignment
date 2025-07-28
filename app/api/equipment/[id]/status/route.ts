@@ -62,6 +62,7 @@ export async function POST(
       }
     });
   } catch (error) {
+    console.error('Error updating equipment status:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to update equipment status' },
       { status: 500 }

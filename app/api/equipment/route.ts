@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 // In-memory database that persists during runtime but resets on server restart
-let equipment = [
+const equipment = [
   {
     id: 1,
     name: "Excavator CAT 320",
@@ -40,7 +40,7 @@ let equipment = [
 ];
 
 // In-memory status history database
-let statusHistory = [
+const statusHistory = [
   {
     id: 1,
     equipmentId: 1,
@@ -102,6 +102,7 @@ export async function GET() {
       count: equipment.length
     });
   } catch (error) {
+    console.error('Error fetching equipment:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to fetch equipment' },
       { status: 500 }
@@ -148,6 +149,7 @@ export async function POST(request: Request) {
       data: newEquipment
     }, { status: 201 });
   } catch (error) {
+    console.error('Error creating equipment:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to create equipment' },
       { status: 500 }

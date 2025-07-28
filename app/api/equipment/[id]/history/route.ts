@@ -33,6 +33,7 @@ export async function GET(
       }
     });
   } catch (error) {
+    console.error('Error fetching equipment history:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to fetch equipment history' },
       { status: 500 }

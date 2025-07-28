@@ -1,47 +1,55 @@
 "use client";
 
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
 export default function SwaggerUI() {
   useEffect(() => {
     // Load Swagger UI
-    const script = document.createElement('script');
-    script.src = 'https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui-bundle.js';
+    const script = document.createElement("script");
+    script.src = "https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui-bundle.js";
     script.onload = () => {
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = 'https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui.css';
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui.css";
       document.head.appendChild(link);
-
+      
       // Initialize Swagger UI
-      const ui = (window as any).SwaggerUIBundle({
-        url: '/api/docs',
-        dom_id: '#swagger-ui',
+      // @ts-expect-error - Swagger UI is loaded dynamically
+      window.SwaggerUIBundle({
+        url: "/api/docs",
+        dom_id: "#swagger-ui",
         deepLinking: true,
         presets: [
-          (window as any).SwaggerUIBundle.presets.apis,
-          (window as any).SwaggerUIBundle.SwaggerUIStandalonePreset
+          // @ts-expect-error - Swagger UI presets
+          window.SwaggerUIBundle.presets.apis,
+          // @ts-expect-error - Swagger UI standalone preset
+          window.SwaggerUIBundle.SwaggerUIStandalonePreset,
         ],
         plugins: [
-          (window as any).SwaggerUIBundle.plugins.DownloadUrl
+          // @ts-expect-error - Swagger UI plugins
+          window.SwaggerUIBundle.plugins.DownloadUrl,
         ],
-        theme: 'light',
-        supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch']
+        theme: "light",
+        supportedSubmitMethods: ["get", "post", "put", "delete", "patch"],
       });
     };
     document.head.appendChild(script);
 
     return () => {
       // Cleanup
-      const existingScript = document.querySelector('script[src*="swagger-ui-dist"]');
+      const existingScript = document.querySelector(
+        'script[src*="swagger-ui-dist"]'
+      );
       if (existingScript) {
         existingScript.remove();
       }
-      const existingLink = document.querySelector('link[href*="swagger-ui-dist"]');
+      const existingLink = document.querySelector(
+        'link[href*="swagger-ui-dist"]'
+      );
       if (existingLink) {
         existingLink.remove();
       }
-      const customStyle = document.querySelector('style');
+      const customStyle = document.querySelector("style");
       if (customStyle) {
         customStyle.remove();
       }
@@ -62,8 +70,12 @@ export default function SwaggerUI() {
           </div>
         </div>
       </div>
-      
-      <div id="swagger-ui" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-white" style={{ minHeight: '600px' }}>
+
+      <div
+        id="swagger-ui"
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-white"
+        style={{ minHeight: "600px" }}
+      >
         <div className="text-center py-12">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
           <p className="mt-4 text-gray-600">Loading API documentation...</p>
@@ -71,4 +83,4 @@ export default function SwaggerUI() {
       </div>
     </div>
   );
-} 
+}

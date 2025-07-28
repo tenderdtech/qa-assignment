@@ -14,7 +14,7 @@ export async function GET() {
     },
     servers: [
       {
-        url: "https://your-app.vercel.app",
+        url: "https://qa-assignment-omega.vercel.app",
         description: "Production server"
       },
       {

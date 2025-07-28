@@ -10,8 +10,8 @@ You are tasked with testing the **Equipment Status Tracker** application. This a
 ## 🏗️ Application Details
 
 **Application Name:** Equipment Status Tracker  
-**Frontend URL:** [Your deployed Vercel URL]  
-**API Documentation:** [Your deployed Vercel URL]/docs  
+**Frontend URL:** https://qa-assignment-omega.vercel.app  
+**API Documentation:** https://qa-assignment-omega.vercel.app/docs  
 **Technology Stack:** Next.js, TypeScript, Tailwind CSS
 
 ### Core Features
@@ -80,7 +80,7 @@ Choose one API testing approach:
 - **Pytest** (Python)
 
 #### 3.2 API Testing Requirements
-Test all available endpoints using the Swagger documentation at `/docs`:
+Test all available endpoints using the Swagger documentation at https://qa-assignment-omega.vercel.app/docs:
 
 **Required Endpoints:**
 - `GET /api/equipment` - Get all equipment
@@ -146,8 +146,8 @@ Test all available endpoints using the Swagger documentation at `/docs`:
 ## 🚀 Getting Started
 
 1. **Access the Application:**
-   - Frontend: [Your Vercel URL]
-   - API Documentation: [Your Vercel URL]/docs
+   - Frontend: https://qa-assignment-omega.vercel.app
+   - API Documentation: https://qa-assignment-omega.vercel.app/docs
 
 2. **Review the Application:**
    - Explore the frontend functionality
@@ -166,7 +166,7 @@ Test all available endpoints using the Swagger documentation at `/docs`:
 
 ## 📞 Support
 
-- **API Documentation:** Use `/docs` for complete API details
+- **API Documentation:** Use https://qa-assignment-omega.vercel.app/docs for complete API details
 - **Application Issues:** Document any problems you encounter
 - **Technical Questions:** Include in your submission notes
 
