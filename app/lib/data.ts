@@ -1,5 +1,5 @@
 // In-memory database that persists during runtime but resets on server restart
-export let equipment = [
+export const equipment = [
     {
       id: 1,
       name: "Excavator CAT 320",
@@ -38,7 +38,7 @@ export let equipment = [
   ];
   
   // In-memory status history database
-  export let statusHistory = [
+  export const statusHistory = [
     {
       id: 1,
       equipmentId: 1,
