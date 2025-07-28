@@ -1,12 +1,13 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { statusHistory } from '../../route';
 
 export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) { 
   try {
-    const equipmentId = parseInt(params.id);
+    const { id } = await params;
+    const equipmentId = parseInt(id);
     
     // Get URL parameters for filtering
     const { searchParams } = new URL(request.url);

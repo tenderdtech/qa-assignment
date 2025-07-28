@@ -3,10 +3,11 @@ import { equipment, statusHistory } from '../../route';
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const equipmentId = parseInt(params.id);
+    const { id } = await params;
+    const equipmentId = parseInt(id);
     const body = await request.json();
     const { status, changedBy = "System" } = body;
 
