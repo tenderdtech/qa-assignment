@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from 'next/server';
-import { statusHistory } from '../../route';
+import { statusHistory } from '@/app/lib/data';
 
 export async function GET(
   request: NextRequest,

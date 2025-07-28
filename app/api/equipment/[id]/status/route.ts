@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { equipment, statusHistory } from '../../route';
+import { equipment, statusHistory } from '@/app/lib/data';
 
 export async function POST(
   request: Request,
