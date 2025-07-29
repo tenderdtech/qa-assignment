@@ -6,11 +6,7 @@ export async function GET() {
     info: {
       title: "Equipment Status Tracker API",
       description: "API for managing equipment status and tracking status history",
-      version: "1.0.0",
-      contact: {
-        name: "API Support",
-        email: "support@example.com"
-      }
+      version: "1.0.0"
     },
     servers: [
       {
