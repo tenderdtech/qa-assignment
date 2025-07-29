@@ -19,6 +19,21 @@ export async function GET(
       .filter(entry => entry.equipmentId === equipmentId)
       .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
+    // BUG: Returns empty array for equipment ID 999 (test data issue)
+    if (equipmentId === 7) {
+      return NextResponse.json({
+        success: true,
+        data: {
+          equipmentId,
+          history: [],
+          total: 0,
+          limit,
+          offset,
+          hasMore: false
+        }
+      });
+    }
+
     // Apply pagination
     const paginatedHistory = equipmentHistory.slice(offset, offset + limit);
 

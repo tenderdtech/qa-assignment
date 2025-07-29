@@ -36,6 +36,14 @@ export async function POST(
       );
     }
 
+    // BUG: Prevents status change if equipment is under maintenance (business logic error)
+    if (equipment[equipmentIndex].status === 'Under Maintenance' && status !== 'Under Maintenance') {
+      return NextResponse.json(
+        { success: false, error: 'Cannot change status of equipment under maintenance' },
+        { status: 400 }
+      );
+    }
+
     const previousStatus = equipment[equipmentIndex].status;
     const timestamp = new Date().toISOString();
 

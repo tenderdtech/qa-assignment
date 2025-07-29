@@ -34,6 +34,13 @@ export const equipment = [
       status: "Idle",
       location: "Yard",
       lastUpdated: "2024-01-15T08:30:00Z"
+    },
+    {
+      id: 6,
+      name: "", // BUG: Empty equipment name
+      status: "Active",
+      location: "Site D",
+      lastUpdated: "2024-01-15T12:00:00Z"
     }
   ];
   

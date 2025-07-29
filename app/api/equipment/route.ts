@@ -3,6 +3,15 @@ import { equipment } from '@/app/lib/data';
 
 export async function GET() {
   try {
+    // BUG: Sometimes returns malformed JSON for testing
+    const shouldReturnError = Math.random() < 0.1; // 10% chance
+    if (shouldReturnError) {
+      return new Response('{"success": false, "error": "Random server error"}', {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
     return NextResponse.json({
       success: true,
       data: equipment,

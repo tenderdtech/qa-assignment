@@ -151,7 +151,7 @@ export default function Home() {
       case 'Active':
         return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400';
       case 'Idle':
-        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400';
+        return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400'; // BUG: Wrong color for Idle status
       case 'Under Maintenance':
         return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400';
       default:
@@ -160,7 +160,7 @@ export default function Home() {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString();
+      return new Date(dateString).toLocaleString();
   };
 
   return (
@@ -212,6 +212,12 @@ export default function Home() {
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                 Equipment List ({equipment.length} items)
               </h2>
+              {/* BUG: Shows wrong count for active equipment */}
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                Active: {equipment.filter(eq => eq.status === 'Active').length + 1} | {/* BUG: Off-by-one error */}
+                Idle: {equipment.filter(eq => eq.status === 'Idle').length} | 
+                Maintenance: {equipment.filter(eq => eq.status === 'Under Maintenance').length}
+              </p>
             </div>
             
             <div className="overflow-x-auto">
@@ -268,12 +274,13 @@ export default function Home() {
                           <option value="Idle">Idle</option>
                           <option value="Under Maintenance">Under Maintenance</option>
                         </select>
-                        <button
-                          onClick={() => openHistory(item)}
-                          className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
-                        >
-                          History
-                        </button>
+                                          <button
+                    onClick={() => openHistory(item)}
+                    className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                    disabled={item.status === 'Under Maintenance'} // BUG: History button disabled for maintenance equipment
+                  >
+                    History
+                  </button>
                       </td>
                     </tr>
                   ))}
@@ -432,6 +439,10 @@ export default function Home() {
                   >
                     {addingEquipment ? 'Adding...' : 'Add Equipment'}
                   </button>
+                  {/* BUG: Form validation allows empty name with spaces */}
+                  {newEquipment.name.trim() === '' && newEquipment.name !== '' && (
+                    <p className="text-red-500 text-sm mt-1">Name cannot be only spaces</p>
+                  )}
                 </div>
               </form>
             </div>
