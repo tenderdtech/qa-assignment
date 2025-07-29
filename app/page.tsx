@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { toast, Toaster } from 'sonner';
 
 interface Equipment {
   id: number;
@@ -22,7 +23,6 @@ interface StatusHistory {
 export default function Home() {
   const [equipment, setEquipment] = useState<Equipment[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [selectedEquipment, setSelectedEquipment] = useState<Equipment | null>(null);
   const [showHistory, setShowHistory] = useState(false);
   const [history, setHistory] = useState<StatusHistory[]>([]);
@@ -46,7 +46,7 @@ export default function Home() {
       const data = await response.json();
       setEquipment(data.data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      toast.error(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);
     }
@@ -62,7 +62,7 @@ export default function Home() {
       const data = await response.json();
       setHistory(data.data.history);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch history');
+      toast.error(err instanceof Error ? err.message : 'Failed to fetch history');
     } finally {
       setHistoryLoading(false);
     }
@@ -88,8 +88,9 @@ export default function Home() {
 
       // Refresh equipment list
       await fetchEquipment();
+      toast.success('Status updated successfully');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update status');
+      toast.error(err instanceof Error ? err.message : 'Failed to update status');
     } finally {
       setUpdatingStatus(null);
     }
@@ -126,8 +127,9 @@ export default function Home() {
       
       // Refresh equipment list
       await fetchEquipment();
+      toast.success('Equipment added successfully');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to add equipment');
+      toast.error(err instanceof Error ? err.message : 'Failed to add equipment');
     } finally {
       setAddingEquipment(false);
     }
@@ -163,7 +165,11 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header */}
+      <Toaster 
+        position="bottom-right"
+        closeButton
+        duration={4000}
+      />
       <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
@@ -194,14 +200,7 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {error && (
-          <div className="mb-6 bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded">
-            <strong>Error:</strong> {error}
-          </div>
-        )}
-
         {loading ? (
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
